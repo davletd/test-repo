@@ -26,14 +26,14 @@ variable "location" {
 variable "client_id" {
   description = "Azure Active Directory Application (client) ID"
   type        = string
-  default     =  "f0815841-d8e9-4a44-916c-142d35b31708" # "35dd9777-f6f5-4fb4-92a5-30f1efc75612"  # Replace with your actual Client ID
+  default     =  "${AZURE_CLIENT_ID}"
 }
 
 variable "client_secret" {
   description = "Azure Active Directory Application (client) Secret"
   type        = string
   sensitive   = true
-  default     = "accf6505-8a00-4ca3-8127-23767427ce7e" #"pIF8Q~4wh~7YGMGCogoW1cAcnjtq4mS~Pv0Rgajr"  # Replace with your actual Client Secret
+  default     = "${AZURE_CLIENT_SECRET}"
 }
 
 variable "tenant_id" {
