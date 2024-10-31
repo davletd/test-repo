@@ -53,7 +53,7 @@ jobs:
           # List all your secrets here
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          #DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          SQL_ADMIN_PASSWORD: ${{ secrets.SQL_ADMIN_PASSWORD }}
         run: |
           envsubst < azure.auto.tfvars.tpl > azure.auto.tfvars
 
