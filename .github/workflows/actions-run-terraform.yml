@@ -12,12 +12,12 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  id-token: write
 
 jobs:
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
-    id-token: write
     
     # Use a default working directory where Terraform files are located
     defaults:
