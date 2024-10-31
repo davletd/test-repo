@@ -47,7 +47,7 @@ jobs:
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           #DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         run: |
-          envsubst < variables.tf > variables.auto.tfvars  
+          envsubst < azure.auto.tfvars.tpl > azure.auto.tfvars
 
       # Initialize Terraform
       - name: Terraform Init
