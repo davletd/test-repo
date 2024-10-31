@@ -51,3 +51,15 @@ variable "sql_admin_password" {
   type        = string
   sensitive   = true
 }
+
+variable "environment" {
+  description = "The environment for the resource group (e.g., dev, staging, production)"
+  type        = string
+  default     = "production"
+}
+
+variable "sql_connection_string" {
+  description = "SQL connection string for the web app"
+  type        = string
+  default     = ""
+}
