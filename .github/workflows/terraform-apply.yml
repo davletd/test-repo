@@ -1,0 +1,78 @@
+name: Terraform Apply
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform-apply.yml'
+
+# Permissions needed to interact with GitHub Actions
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    
+    # Use a default working directory where Terraform files are located
+    defaults:
+      run:
+        working-directory: ./terraform
+
+    steps:
+      # Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Azure Login Step
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7  # Specify your desired Terraform version
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      # Add step to install envsubst (part of gettext)
+      - name: Install gettext
+        run: sudo apt-get update && sudo apt-get install -y gettext
+
+      # Replace secrets in template file
+      - name: Replace Secrets in Terraform Variables
+        env:
+          # List all your secrets here
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          #DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        run: |
+          envsubst < azure.auto.tfvars.tpl > azure.auto.tfvars
+
+      # Initialize Terraform
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        
+      # Validate Terraform configuration
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+
+      # Run Terraform Plan
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false
+
+      # Run Terraform Apply
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -auto-approve -input=false
