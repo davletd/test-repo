@@ -17,6 +17,7 @@ jobs:
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
+    id-token: write
     
     # Use a default working directory where Terraform files are located
     defaults:
