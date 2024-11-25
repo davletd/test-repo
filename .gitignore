@@ -1,1 +1,5 @@
 azure.auto.tfvars
+
+.terraform
+
+.terraform.lock.hcl
