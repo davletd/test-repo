@@ -1,0 +1,1 @@
+This file it to keep terraform folder created
