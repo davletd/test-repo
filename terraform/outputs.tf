@@ -1,11 +1,3 @@
-output "app_service_url" {
-  value = azurerm_windows_web_app.app.default_hostname
-}
-
-output "sql_server_name" {
-  value = azurerm_mssql_server.sql.name
-}
-
-output "sql_database_name" {
-  value = azurerm_mssql_database.sqldb.name
+output "google_compute_instance_tfer--instance-20240605-145222_self_link" {
+  value = "${google_compute_instance.tfer--instance-20240605-145222.self_link}"
 }
