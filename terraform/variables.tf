@@ -63,3 +63,10 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+
+# Add new variable for VM name
+variable "vm_name" {
+  description = "Name of the Virtual Machine"
+  type        = string
+  default     = "cloudgeni-test-vm"
+}
