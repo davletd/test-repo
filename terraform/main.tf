@@ -74,3 +74,27 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+# New Virtual Machine in EU Region
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                  = "example-vm-eu"
+  location              = var.location
+  resource_group_name   = azurerm_resource_group.rg.name
+  network_interface_ids = ["example-nic-id"]
+  size                  = "Standard_B1s"
+
+  os_disk {
+    caching           = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+
+  admin_username       = "adminuser"
+  admin_password       = var.sql_admin_password  # Example, consider using var for better security.
+}
