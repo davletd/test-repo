@@ -52,6 +52,24 @@ variable "sql_admin_password" {
   sensitive   = true
 }
 
+variable "vm_name" {
+  description = "Name of the Virtual Machine"
+  type        = string
+  default     = "cloudgeni-test-vm"
+}
+
+variable "vm_admin_username" {
+  description = "Admin username for the Virtual Machine"
+  type        = string
+  default     = "adminuser"
+}
+
+variable "vm_admin_password" {
+  description = "Admin password for the Virtual Machine"
+  type        = string
+  sensitive   = true
+}
+
 variable "environment" {
   description = "The environment for the resource group (e.g., dev, staging, production)"
   type        = string
