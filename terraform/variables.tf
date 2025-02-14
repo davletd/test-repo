@@ -11,6 +11,12 @@ variable "app_service_name" {
   default     = "cloudgeni-test-appservice"
 }
 
+variable "vm_name" {
+  description = "Name of the virtual machine"
+  type        = string
+  default     = "cloudgeni-test-vm"
+}
+
 variable "sql_server_name" {
   description = "Name of the SQL Server"
   type        = string
@@ -62,4 +68,11 @@ variable "sql_connection_string" {
   description = "SQL connection string for the web app"
   type        = string
   default     = ""
+}
+
+# Variable for VM admin password
+variable "vm_admin_password" {
+  description = "Admin password for the virtual machine"
+  type        = string
+  sensitive   = true
 }
