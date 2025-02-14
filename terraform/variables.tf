@@ -58,8 +58,45 @@ variable "environment" {
   default     = "production"
 }
 
-variable "sql_connection_string" {
-  description = "SQL connection string for the web app"
+variable "vm_name" {
+  description = "Name of the Virtual Machine"
   type        = string
-  default     = ""
+  default     = "cloudgeni-test-vm"
 }
+
+variable "vm_size" {
+  description = "Size of the Virtual Machine"
+  type        = string
+  default     = "Standard_DS1_v2"
+}
+
+variable "vm_admin_username" {
+  description = "Admin Username for the Virtual Machine"
+  type        = string
+  default     = "azureuser"
+}
+
+variable "vm_admin_password" {
+  description = "Admin Password for the Virtual Machine"
+  type        = string
+  sensitive   = true
+}
+
+variable "vnet_name" {
+  description = "Name of the Virtual Network"
+  type        = string
+  default     = "cloudgeni-test-vnet"
+}
+
+variable "vnet_address_space" {
+  description = "Address space for the Virtual Network"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
+variable "subnet_prefix" {
+  description = "Address prefix for the Subnet"
+  type        = string
+  default     = "10.0.1.0/24"
+}
+
