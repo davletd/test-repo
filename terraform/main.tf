@@ -17,7 +17,7 @@ provider "azurerm" {
 # Resource Group
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
-  location = var.location
+  location = "West Europe" # Updated to new location
 }
 
 # Service Plan
@@ -73,4 +73,53 @@ resource "azurerm_application_insights" "ai" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
+}
+
+# Creating new VM in EU region
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                = "${var.vm_name}"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = "West Europe" # Specific location for the VM
+  size                = "Standard_DS1_v2"
+  admin_username      = "azureuser"
+  admin_password      = var.vm_admin_password
+
+  network_interface_ids = [azurerm_network_interface.nic.id]
+
+  os_disk {
+    caching              = "ReadWrite"
+    create_option       = "FromImage"
+  }
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "20.04-LTS"
+    version   = "latest"
+  }
+}
+
+resource "azurerm_network_interface" "nic" {
+  name                = "${var.vm_name}-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "ipconfig1"
+    subnet_id                     = azurerm_subnet.subnet.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+resource "azurerm_virtual_network" "vnet" {
+  name                = "${var.vm_name}-vnet"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  address_space       = ["10.0.0.0/16"]
+}
+
+resource "azurerm_subnet" "subnet" {
+  name                 = "${var.vm_name}-subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
 }
