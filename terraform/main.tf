@@ -11,7 +11,7 @@ terraform {
 
 provider "azurerm" {
   features {}
-	skip_provider_registration = true
+  skip_provider_registration = true
 }
 
 # Resource Group
@@ -74,3 +74,54 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+# New Virtual Machine
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                = "${var.vm_name}"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  size                = var.vm_size
+  admin_username      = var.vm_admin_username
+  admin_password      = var.vm_admin_password
+
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
+
+  os_disk {
+    caching              = "ReadWrite"
+    create_option        = "FromImage"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+}
+
+resource "azurerm_network_interface" "vm_nic" {
+  name                = "${var.vm_name}-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.example.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+resource "azurerm_virtual_network" "example" {
+  name                = "${var.vnet_name}"
+  address_space       = [var.vnet_address_space]
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+resource "azurerm_subnet" "example" {
+  name                 = "default"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.example.name
+  address_prefixes     = [var.subnet_prefix]
+}
+
