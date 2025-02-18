@@ -1,3 +1,4 @@
+
 terraform {
   required_version = ">= 0.13"
 
@@ -11,7 +12,7 @@ terraform {
 
 provider "azurerm" {
   features {}
-	skip_provider_registration = true
+  skip_provider_registration = true
 }
 
 # Resource Group
@@ -73,4 +74,67 @@ resource "azurerm_application_insights" "ai" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
+}
+
+# Virtual Network
+resource "azurerm_virtual_network" "vnet" {
+  name                = "vm-vnet"
+  location            = "westeurope"
+  resource_group_name = azurerm_resource_group.rg.name
+  address_space       = ["10.0.0.0/16"]
+}
+
+# Subnet
+resource "azurerm_subnet" "subnet" {
+  name                 = "vm-subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
+
+# Public IP
+resource "azurerm_public_ip" "pip" {
+  name                = "vm-public-ip"
+  location            = "westeurope"
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Dynamic"
+}
+
+# Network Interface
+resource "azurerm_network_interface" "nic" {
+  name                = "vm-nic"
+  location            = "westeurope"
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "vm-ipconfig"
+    subnet_id                     = azurerm_subnet.subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.pip.id
+  }
+}
+
+# Virtual Machine
+resource "azurerm_windows_virtual_machine" "vm" {
+  name                = "vm-eu"
+  location            = "westeurope"
+  resource_group_name = azurerm_resource_group.rg.name
+  size                = "Standard_D2s_v3"
+  admin_username      = "adminuser"
+  admin_password      = var.vm_admin_password
+
+  network_interface_ids = [
+    azurerm_network_interface.nic.id
+  ]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2019-Datacenter"
+    version   = "latest"
 }
