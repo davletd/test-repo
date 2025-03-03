@@ -73,4 +73,54 @@ resource "azurerm_application_insights" "ai" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
+}# Adding a Linux Virtual Machine in the EU region
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                  = "cloudgeni-eu-vm"
+  location              = var.location
+  resource_group_name   = azurerm_resource_group.rg.name
+  size                  = "Standard_DS1_v2"
+  admin_username        = "adminuser"
+  admin_password        = var.vm_admin_password
+
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+}
+
+# Adding a Network Interface for the VM
+resource "azurerm_network_interface" "vm_nic" {
+  name                = "cloudgeni-eu-vm-nic"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.vm_subnet.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+# Adding a Virtual Network and Subnet
+resource "azurerm_virtual_network" "vm_vnet" {
+  name                = "cloudgeni-vnet"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  address_space       = ["10.0.0.0/16"]
+}
+
+resource "azurerm_subnet" "vm_subnet" {
+  name                 = "cloudgeni-subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vm_vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
 }
