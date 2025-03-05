@@ -62,4 +62,23 @@ variable "sql_connection_string" {
   description = "SQL connection string for the web app"
   type        = string
   default     = ""
+}# Variable for VM size
+variable "vm_size" {
+  description = "Specifies the size of the virtual machine."
+  type        = string
+  default     = "Standard_DS1_v2"
+}
+
+# Variable for VM admin username
+variable "vm_admin_username" {
+  description = "The admin username for the virtual machine."
+  type        = string
+  default     = "azureuser"
+}
+
+# Variable for VM admin password
+variable "vm_admin_password" {
+  description = "The admin password for the virtual machine."
+  type        = string
+  sensitive   = true
 }
