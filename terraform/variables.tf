@@ -63,3 +63,8 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+variable "vm_admin_password" {
+  description = "Administrator password for the virtual machine"
+  type        = string
+  sensitive   = true
+}
