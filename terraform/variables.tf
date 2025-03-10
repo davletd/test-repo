@@ -26,7 +26,7 @@ variable "sql_database_name" {
 variable "location" {
   description = "Azure location for resources"
   type        = string
-  default     = "North Europe"
+  default     = "West Europe"
 }
 
 variable "client_id" {
@@ -62,4 +62,11 @@ variable "sql_connection_string" {
   description = "SQL connection string for the web app"
   type        = string
   default     = ""
+}
+
+# Variable for Virtual Machine Admin Password
+variable "vm_admin_password" {
+  description = "Admin password for the Virtual Machine"
+  type        = string
+  sensitive   = true
 }
