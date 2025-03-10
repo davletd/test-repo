@@ -74,3 +74,51 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+resource "azurerm_windows_virtual_machine" "vm" {
+  name                  = "cloudgeni-eu-vm"
+  location              = "North Europe" # EU region
+  resource_group_name   = azurerm_resource_group.rg.name
+  size                  = "Standard_B2s"
+  admin_username        = "adminuser"
+  admin_password        = var.vm_admin_password
+
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+}
+
+resource "azurerm_network_interface" "vm_nic" {
+  name                = "cloudgeni-eu-vm-nic"
+  location            = "North Europe" # EU region
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.default.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+resource "azurerm_virtual_network" "vnet" {
+  name                = "cloudgeni-eu-vnet"
+  location            = "North Europe" # EU region
+  resource_group_name = azurerm_resource_group.rg.name
+  address_space       = ["10.0.0.0/16"]
+}
+
+resource "azurerm_subnet" "default" {
+  name                 = "default"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
