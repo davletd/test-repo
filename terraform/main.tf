@@ -74,3 +74,42 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+# Virtual Machine in EU region
+resource "azurerm_network_interface" "vm_nic" {
+  name                = "vm-eu-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/virtualNetworks/example-vnet/subnets/example-subnet"
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                = "vm-eu-region"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  size                = "Standard_DS1_v2"
+  admin_username      = "adminuser"
+
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+
+  depends_on = [
+    azurerm_network_interface.vm_nic
+  ]
+}
