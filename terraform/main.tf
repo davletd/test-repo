@@ -74,3 +74,51 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+# Virtual Machine
+resource "azurerm_windows_virtual_machine" "vm" {
+  name                  = "cloudgeni-eu-vm"
+  location              = var.location
+  resource_group_name   = azurerm_resource_group.rg.name
+  network_interface_ids = ["${azurerm_network_interface.vm_nic.id}"]
+  size                  = "Standard_DS1_v2"
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2019-Datacenter"
+    version   = "latest"
+  }
+
+  admin_username = "adminuser"
+  admin_password = var.sql_admin_password
+}
+
+resource "azurerm_network_interface" "vm_nic" {
+  name                = "cloudgeni-eu-vm-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.vm_subnet.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+resource "azurerm_virtual_network" "vm_vnet" {
+  name                = "cloudgeni-eu-vnet"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  address_space       = ["10.0.0.0/16"]
+}
+
+resource "azurerm_subnet" "vm_subnet" {
+  name                 = "cloudgeni-eu-subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vm_vnet.name
+  address_prefixes     = ["10.0.2.0/24"]
+}
