@@ -74,3 +74,38 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+# Virtual Machine
+resource "azurerm_windows_virtual_machine" "vm" {
+  name                  = "my-eu-vm"
+  location              = "North Europe"
+  resource_group_name   = azurerm_resource_group.rg.name
+  size                  = "Standard_DS2_v2"
+  admin_username        = "azureuser"
+  admin_password        = var.sql_admin_password
+
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "StandardSSD_LRS"
+    disk_size_gb         = 128
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2019-Datacenter"
+    version   = "latest"
+  }
+}
+resource "azurerm_network_interface" "vm_nic" {
+  name                = "my-vm-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = var.subnet_id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
