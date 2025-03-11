@@ -63,3 +63,9 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+# New variable to define VM size
+variable "vm_size" {
+  description = "Size of the new virtual machine"
+  type        = string
+  default     = "Standard_DS1_v2"
+}
