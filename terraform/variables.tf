@@ -63,3 +63,7 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+variable "subnet_id" {
+  description = "Azure Subnet ID for the VM NIC"
+  type        = string
+}
