@@ -63,3 +63,7 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+variable "ssh_public_key" {
+  description = "The SSH public key to be used for virtual machine access"
+  type        = string
+}
