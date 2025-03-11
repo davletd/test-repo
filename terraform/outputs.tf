@@ -9,3 +9,10 @@ output "sql_server_name" {
 output "sql_database_name" {
   value = azurerm_mssql_database.sqldb.name
 }
+output "vm_name" {
+  value = azurerm_windows_virtual_machine.vm.name
+}
+
+output "vm_private_ip" {
+  value = azurerm_network_interface.vm_nic.private_ip_address
+}
