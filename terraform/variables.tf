@@ -63,3 +63,26 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+variable "vm_name" {
+  description = "Name of the virtual machine"
+  type        = string
+  default     = "cloudgeni-eu-vm"
+}
+
+variable "vm_size" {
+  description = "Size of the virtual machine"
+  type        = string
+  default     = "Standard_DS1_v2"
+}
+
+variable "admin_username" {
+  description = "Admin username for the VM"
+  type        = string
+  default     = "cloudadmin"
+}
+
+variable "admin_password" {
+  description = "Admin password for the VM"
+  type        = string
+  sensitive   = true
+}
