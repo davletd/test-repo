@@ -74,3 +74,16 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+# Create a Virtual Machine in the EU region
+resource "azurerm_linux_virtual_machine" "vm_eu" {
+  name                  = "eu-vm"
+  resource_group_name   = azurerm_resource_group.rg.name
+  location              = var.location
+  size                  = var.vm_size
+  admin_username        = "adminuser"
+  admin_password        = "MyStrongP@ssword123"
+  network_interface_ids = []
+}
+
+
+}
