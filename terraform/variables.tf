@@ -63,3 +63,32 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+variable "vm_name" {
+  description = "The name of the virtual machine in EU region"
+  type        = string
+  default     = "cloudgeni-test-vm-eu"
+}
+
+variable "vm_size" {
+  description = "The size of the virtual machine in EU region"
+  type        = string
+  default     = "Standard_DS2_v2"
+}
+
+variable "vm_os_publisher" {
+  description = "OS Publisher for the virtual machine"
+  type        = string
+  default     = "Canonical"
+}
+
+variable "vm_os_offer" {
+  description = "OS Offer for the virtual machine"
+  type        = string
+  default     = "UbuntuServer"
+}
+
+variable "vm_os_sku" {
+  description = "OS SKU for the virtual machine"
+  type        = string
+  default     = "18.04-LTS"
+}
