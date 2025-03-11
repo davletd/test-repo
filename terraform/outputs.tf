@@ -9,3 +9,6 @@ output "sql_server_name" {
 output "sql_database_name" {
   value = azurerm_mssql_database.sqldb.name
 }
+output "vm_name" {
+  value = azurerm_linux_virtual_machine.vm.name
+}
