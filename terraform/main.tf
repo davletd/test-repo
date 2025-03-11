@@ -74,3 +74,41 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+# Virtual Machine
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                  = "example-vm"
+  location              = var.location
+  resource_group_name   = azurerm_resource_group.rg.name
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
+  size                  = "Standard_DS1_v2"
+
+  os_disk {
+    caching            = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  admin_username        = "adminuser"
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = var.ssh_public_key
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+}
+# Network Interface
+resource "azurerm_network_interface" "vm_nic" {
+  name                = "example-vm-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = null # Replace this with a valid subnet ID
+    private_ip_address_allocation = "Dynamic"
+  }
+}
