@@ -9,3 +9,6 @@ output "sql_server_name" {
 output "sql_database_name" {
   value = azurerm_mssql_database.sqldb.name
 }
+output "key_vault_name" {
+  value = azurerm_key_vault.keyvault.name
+}
