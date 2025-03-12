@@ -11,7 +11,7 @@ terraform {
 
 provider "azurerm" {
   features {}
-	skip_provider_registration = true
+  skip_provider_registration = true
 }
 
 # Resource Group
@@ -73,4 +73,22 @@ resource "azurerm_application_insights" "ai" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
+}
+# Azure Key Vault
+resource "azurerm_key_vault" "kv" {
+  name                = "${var.resource_group_name}-kv"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  tenant_id = var.tenant_id
+
+  sku_name = "standard"
+
+  access_policy {
+    tenant_id      = var.tenant_id
+    object_id      = azurerm_windows_web_app.app.identity[0].principal_id
+    key_permissions = ["Get", "List"]
+    secret_permissions = ["Get", "List"]
+    certificate_permissions = []
+  }
 }
