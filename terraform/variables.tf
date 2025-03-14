@@ -63,3 +63,8 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+variable "key_vault_name" {
+  description = "Name of the Azure Key Vault"
+  type        = string
+  default     = "cloudgeni-test-keyvault"
+}
