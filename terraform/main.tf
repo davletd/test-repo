@@ -74,3 +74,19 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+# Azure Key Vault for secrets storage
+resource "azurerm_key_vault" "kv" {
+  name                = "${var.resource_group_name}-kv"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  sku_name = "standard"
+
+  tenant_id = var.tenant_id
+
+  access_policy {
+    tenant_id = var.tenant_id
+    object_id = azurerm_windows_web_app.app.identity[0].principal_id
+    secret_permissions = ["get", "list", "set", "delete"]
+  }
+}
