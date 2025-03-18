@@ -63,3 +63,9 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+
+variable "vm_name" {
+  description = "The name of the virtual machine"
+  type        = string
+  default     = "vm-eu-east"
+}

@@ -74,3 +74,7 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+# Virtual Machine Resource
+
+  location = "East Europe" # Overrides core location to create the VM in East Europe
