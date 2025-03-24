@@ -23,11 +23,13 @@ variable "sql_database_name" {
   default     = "cloudgeni-test-database"
 }
 
+
 variable "location" {
   description = "Azure location for resources"
   type        = string
-  default     = "North Europe"
+  default     = "East Europe"
 }
+
 
 variable "client_id" {
   description = "Azure Active Directory Application (client) ID"
