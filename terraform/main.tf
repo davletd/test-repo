@@ -74,3 +74,35 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+# Adding a new VM in the EU region
+
+resource "azurerm_windows_virtual_machine" "vm_eu" {
+  name                  = "vm-eu"
+  location              = "West Europe"
+  resource_group_name   = azurerm_resource_group.rg.name
+  network_interface_ids = [data.azurerm_network_interface.example_nic_eu.id]
+  
+  size                  = "Standard_DS1_v2"
+  
+  admin_username        = "cloudgeni_admin"
+  admin_password        = "AdminPassw0rd"
+  
+  os_disk {
+    caching           = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+  
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2019-Datacenter"
+    version   = "latest"
+  }
+}
+
+
+data "azurerm_network_interface" "example_nic_eu" {
+  name                = "example-nic-eu"
+  resource_group_name = azurerm_resource_group.rg.name
+}
