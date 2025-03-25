@@ -74,3 +74,32 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+# Create new Virtual Machine in EU region
+resource "azurerm_linux_virtual_machine" "new_vm" {
+  name                = "new_vm_eu_region"
+  location            = "West Europe"
+  resource_group_name = azurerm_resource_group.rg.name
+  
+  network_interface_ids = [
+  azurerm_network_interface.example.id
+  ]
+  
+  size = "Standard_B1s"
+  
+  admin_username = "adminuser"
+  
+  admin_password = var.admin_password
+  
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+  
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+}
