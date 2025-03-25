@@ -74,3 +74,29 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+# Azure Key Vault
+resource "azurerm_key_vault" "kv" {
+  name                = "${var.app_service_name}-kv"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  
+  sku_name = "standard"
+  
+  tenant_id = var.tenant_id
+  
+  access_policy {
+    tenant_id = var.tenant_id
+    object_id = "CLIENT_ID_PLACEHOLDER"
+    secret_permissions = [
+    "Get",
+    "List"
+    ]
+  }
+}
+
+resource "azurerm_key_vault_secret" "kv_secret" {
+  name         = "web-app-client-secret"
+  value        = var.client_secret
+  key_vault_id = azurerm_key_vault.kv.id
+}
