@@ -9,10 +9,17 @@ terraform {
   }
 }
 
+
 provider "azurerm" {
   features {}
-	skip_provider_registration = true
+  skip_provider_registration = true
+  
+  client_id       = var.client_id
+  client_secret   = var.client_secret
+  tenant_id       = var.tenant_id
+  subscription_id = "00000000-0000-0000-0000-000000000000"  # This should be replaced with actual subscription ID
 }
+
 
 # Resource Group
 resource "azurerm_resource_group" "rg" {
@@ -51,6 +58,7 @@ resource "azurerm_windows_web_app" "app" {
 }
 
 # Azure SQL Server
+
 resource "azurerm_mssql_server" "sql" {
   name                         = var.sql_server_name
   resource_group_name          = azurerm_resource_group.rg.name
@@ -58,7 +66,9 @@ resource "azurerm_mssql_server" "sql" {
   version                      = "12.0"
   administrator_login          = "adminuser"
   administrator_login_password = var.sql_admin_password
+  minimum_tls_version         = "1.2"
 }
+
 
 # Azure SQL Database
 resource "azurerm_mssql_database" "sqldb" {
