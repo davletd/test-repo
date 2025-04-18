@@ -51,6 +51,7 @@ resource "azurerm_windows_web_app" "app" {
 }
 
 # Azure SQL Server
+
 resource "azurerm_mssql_server" "sql" {
   name                         = var.sql_server_name
   resource_group_name          = azurerm_resource_group.rg.name
@@ -58,7 +59,12 @@ resource "azurerm_mssql_server" "sql" {
   version                      = "12.0"
   administrator_login          = "adminuser"
   administrator_login_password = var.sql_admin_password
+  
+  identity {
+    type = "SystemAssigned"
+  }
 }
+
 
 # Azure SQL Database
 resource "azurerm_mssql_database" "sqldb" {
@@ -73,4 +79,36 @@ resource "azurerm_application_insights" "ai" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
+}
+
+# Storage Account for SQL Server Audit Logs
+resource "azurerm_storage_account" "sqlaudit" {
+  name                     = "${lower(replace(var.sql_server_name, "-", ""))}audit"
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  min_tls_version         = "TLS1_2"
+  
+  enable_https_traffic_only = true
+  
+  tags = {
+    purpose = "SQLServerAudit"
+  }
+}
+
+# Role assignment for SQL Server to access Storage Account
+resource "azurerm_role_assignment" "sql_storage_contributor" {
+  scope                = azurerm_storage_account.sqlaudit.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_mssql_server.sql.identity[0].principal_id
+}
+
+# SQL Server Extended Auditing Policy
+resource "azurerm_mssql_server_extended_auditing_policy" "sql_audit" {
+  server_id                               = azurerm_mssql_server.sql.id
+  storage_endpoint                        = azurerm_storage_account.sqlaudit.primary_blob_endpoint
+  storage_account_access_key             = azurerm_storage_account.sqlaudit.primary_access_key
+  storage_account_access_key_is_secondary = false
+  retention_in_days                       = 90
 }
