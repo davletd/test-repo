@@ -74,3 +74,27 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+# Storage Account for SQL Server Audit Logs
+resource "azurerm_storage_account" "sqlaudit" {
+  name                     = "${var.sql_server_name}audit"
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  min_tls_version         = "TLS1_2"
+  
+  network_rules {
+    default_action = "Deny"
+    ip_rules       = ["0.0.0.0/0"]
+    bypass         = ["AzureServices"]
+  }
+}
+
+# SQL Server Extended Auditing Policy
+resource "azurerm_mssql_server_extended_auditing_policy" "sql" {
+  server_id                         = azurerm_mssql_server.sql.id
+  storage_endpoint                  = azurerm_storage_account.sqlaudit.primary_blob_endpoint
+  storage_account_access_key        = azurerm_storage_account.sqlaudit.primary_access_key
+  retention_in_days                 = 90
+}
