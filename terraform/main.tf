@@ -74,3 +74,40 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+resource "azurerm_virtual_machine" "eu_vm" {
+  name                  = "my-eu-vm"
+  location              = "East US"
+  resource_group_name   = azurerm_resource_group.rg.name
+  network_interface_ids = ["example-nic"]
+  
+  delete_os_disk_on_termination = true
+  delete_data_disks_on_termination = true
+  
+  os_profile {
+    computer_name  = "myvm"
+    admin_username = "adminuser"
+    
+    custom_data    = base64encode("#!/bin/bash\necho 'Hello, Azure VM!' > /tmp/hello.txt")
+  }
+  
+  os_profile_linux_config {
+    disable_password_authentication = false
+    
+    ssh_keys {
+      path     = "/home/adminuser/.ssh/authorized_keys"
+      key_data = "ssh-rsa AAAAB3Nza..."
+    }
+  }
+  
+  storage_os_disk {
+    name              = "myvm-osdisk"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Premium_LRS"
+  }
+  
+  storage_image_reference {
+    id = var.image_id
+  }
+}

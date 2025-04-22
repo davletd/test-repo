@@ -63,3 +63,9 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+
+variable "image_id" {
+  description = "ID of the image to use for the virtual machine"
+  type        = string
+  default     = "example-image-id"
+}
