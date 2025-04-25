@@ -63,3 +63,34 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+
+variable "vsphere_user" {
+  description = "Username for vSphere"
+  type        = string
+}
+
+variable "vsphere_password" {
+  description = "Password for vSphere"
+  type        = string
+  sensitive   = true
+}
+
+variable "vsphere_server" {
+  description = "Server for vSphere"
+  type        = string
+}
+
+variable "vsphere_resource_pool_id" {
+  description = "Resource Pool ID"
+  type        = string
+}
+
+variable "vsphere_datastore_id" {
+  description = "Datastore ID"
+  type        = string
+}
+
+variable "vsphere_network_id" {
+  description = "Network ID"
+  type        = string
+}
