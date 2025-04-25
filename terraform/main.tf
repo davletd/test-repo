@@ -74,3 +74,57 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+# Virtual Network (placeholder if networking does not exist already)
+resource "azurerm_virtual_network" "vm_vnet" {
+  name                = "${var.vm_name}-vnet"
+  location            = var.vm_location
+  resource_group_name = azurerm_resource_group.rg.name
+  address_space       = ["10.0.0.0/16"]
+}
+
+# Subnet (inside Virtual Network)
+resource "azurerm_subnet" "vm_subnet" {
+  name                 = "${var.vm_name}-subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vm_vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
+
+# Network Interface for VM
+resource "azurerm_network_interface" "vm_nic" {
+  name                = "${var.vm_name}-nic"
+  location            = var.vm_location
+  resource_group_name = azurerm_resource_group.rg.name
+  
+  ip_configuration {
+    name                          = "${var.vm_name}-ipconfig"
+    subnet_id                     = azurerm_subnet.vm_subnet.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+# Virtual Machine
+resource "azurerm_windows_virtual_machine" "vm" {
+  name                = var.vm_name
+  location            = var.vm_location
+  resource_group_name = azurerm_resource_group.rg.name
+  size                = var.vm_size
+  
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
+  
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+  
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2019-Datacenter"
+    version   = "latest"
+  }
+  
+  admin_username = "azureuser"
+  admin_password = var.sql_admin_password
+}
