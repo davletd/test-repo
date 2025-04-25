@@ -63,3 +63,21 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+
+variable "vm_name" {
+  description = "Name of the Virtual Machine"
+  type        = string
+  default     = "cloudgeni-test-vm"
+}
+
+variable "vm_size" {
+  description = "Size of the Virtual Machine"
+  type        = string
+  default     = "Standard_B1ls"
+}
+
+variable "vm_location" {
+  description = "Location of the Virtual Machine"
+  type        = string
+  default     = "East US"
+}
