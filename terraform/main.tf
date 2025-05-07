@@ -74,3 +74,8 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+# Enable auditing to meet compliance requirements
+resource "azurerm_mssql_server_vulnerability_assessment" "sql_auditing" {
+  server_id = azurerm_mssql_server.sql.id
+}
