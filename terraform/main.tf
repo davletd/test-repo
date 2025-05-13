@@ -74,3 +74,11 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+resource "azurerm_mssql_server_extended_auditing_policy" "sql_auditing" {
+  server_id                               = azurerm_mssql_server.sql.id
+  storage_endpoint                        = var.storage_account_endpoint
+  storage_account_access_key              = var.storage_account_access_key
+  storage_account_access_key_is_secondary = false
+  retention_in_days                       = 6
+}
