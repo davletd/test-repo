@@ -63,3 +63,15 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+
+variable "key_vault_name" {
+  description = "Name of the Key Vault"
+  type        = string
+  default     = "cloudgeni-keyvault"
+}
+
+variable "key_vault_sku" {
+  description = "SKU for the Key Vault"
+  type        = string
+  default     = "standard"
+}
