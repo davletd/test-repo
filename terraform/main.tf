@@ -74,3 +74,13 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+# Adding Azure Key Vault Resource
+resource "azurerm_key_vault" "example" {
+  name                        = var.key_vault_name
+  location                    = azurerm_resource_group.rg.location
+  resource_group_name         = azurerm_resource_group.rg.name
+  sku_name                    = var.key_vault_sku
+  
+  tenant_id                   = var.tenant_id
+}
