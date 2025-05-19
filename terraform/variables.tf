@@ -63,3 +63,15 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+
+variable "vm_name_eu" {
+  description = "Name of the Virtual Machine in EU region"
+  type        = string
+  default     = "eu-vm"
+}
+
+variable "vm_size" {
+  description = "Size of the Virtual Machine"
+  type        = string
+  default     = "Standard_DS1_v2"
+}
