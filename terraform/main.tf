@@ -74,3 +74,9 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+resource "azurerm_mssql_database" "new_database" {
+  name      = "new_mssql_database_name" # Replace with appropriate name
+  server_id = azurerm_mssql_server.sql.id
+  sku_name  = "S0"
+}
