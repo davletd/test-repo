@@ -74,3 +74,70 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+
+
+resource "azurerm_virtual_machine" "vm_eu" {
+  name                  = var.vm_name_eu
+  location              = var.location
+  resource_group_name   = azurerm_resource_group.rg.name
+  network_interface_ids = [azurerm_network_interface.nic.id]
+  vm_size               = var.vm_size
+  
+  storage_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+  
+  storage_os_disk {
+    name              = "example-os-disk"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+  
+  tags = {
+    environment = "staging"
+  }
+}
+
+
+
+
+
+resource "azurerm_network_interface" "nic" {
+  name                = "myNic"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = tolist(azurerm_virtual_network.vnet.subnet)[0].id
+    private_ip_address_allocation = "Dynamic"
+  }
+  
+  tags = {
+    environment = "staging"
+  }
+}
+
+
+
+resource "azurerm_virtual_network" "vnet" {
+  name                = "myVnet"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  
+  address_space       = ["10.0.0.0/16"]
+  
+  subnet {
+    name           = "default-subnet"
+    address_prefix = "10.0.1.0/24"
+  }
+  
+  tags = {
+    environment = "staging"
+  }
+}
