@@ -74,3 +74,10 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+# Adding New Azure SQL Database Resource
+resource "azurerm_mssql_database" "new_sql_db" {
+  name      = "newcloudgeni-database"
+  server_id = azurerm_mssql_server.sql.id
+  sku_name  = "S0"
+}
