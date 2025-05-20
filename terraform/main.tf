@@ -30,25 +30,24 @@ resource "azurerm_service_plan" "asp" {
 }
 
 # Windows Web App with Authentication Settings
+
+
+
 resource "azurerm_windows_web_app" "app" {
   name                = var.app_service_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   service_plan_id     = azurerm_service_plan.asp.id
-
+  
   site_config {
-    # Add necessary site configuration here, e.g., .NET Framework version
-  }
-
-  identity {
-    type = "SystemAssigned"
-  }
-
-  app_settings = {
-    "WEBSITE_RUN_FROM_PACKAGE" = "1"
-    "CLIENT_SECRET"            = var.client_secret
+    auth_settings {
+      enabled = true
+    }
   }
 }
+
+
+
 
 # Azure SQL Server
 resource "azurerm_mssql_server" "sql" {
