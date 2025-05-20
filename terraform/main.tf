@@ -61,11 +61,14 @@ resource "azurerm_mssql_server" "sql" {
 }
 
 # Azure SQL Database
+
 resource "azurerm_mssql_database" "sqldb" {
-  name      = var.sql_database_name
-  server_id = azurerm_mssql_server.sql.id
-  sku_name  = "S0"
+  name           = var.sql_database_name
+  server_id      = azurerm_mssql_server.sql.id
+  sku_name       = "S0"
+  zone_redundant = true
 }
+
 
 # Application Insights
 resource "azurerm_application_insights" "ai" {
