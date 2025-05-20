@@ -74,3 +74,12 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+
+
+resource "azurerm_mssql_server_extended_auditing_policy" "audit_policy" {
+  server_id               = azurerm_mssql_server.sql.id
+  retention_in_days       = 91 # Setting retention period greater than 90 days
+}
+
+
