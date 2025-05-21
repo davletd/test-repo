@@ -74,3 +74,27 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+resource "azurerm_storage_account" "sql_audit_sa" {
+  name                     = var.sql_audit_storage_account_name
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+
+resource "azurerm_storage_container" "sql_audit_container" {
+  name                  = "sqlauditlogs"
+  storage_account_name  = azurerm_storage_account.sql_audit_sa.name
+  container_access_type = "private"
+}
+
+
+resource "azurerm_mssql_server_extended_auditing_policy" "sql_audit" {
+  server_id                               = azurerm_mssql_server.sql.id
+  storage_endpoint                        = azurerm_storage_account.sql_audit_sa.primary_blob_endpoint
+  storage_account_access_key              = var.sql_audit_storage_account_access_key
+  storage_account_access_key_is_secondary = false
+  retention_in_days                       = 90
+}

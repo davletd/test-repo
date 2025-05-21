@@ -63,3 +63,18 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+
+variable "sql_audit_storage_account_name" {
+  type        = string
+  description = "The name of the storage account for SQL audit logs."
+  default     = "sqlauditsa"
+}
+
+variable "sql_audit_storage_account_access_key" {
+  type        = string
+  description = "The access key for the SQL audit storage account."
+  sensitive   = true
+  # Note: It is recommended to use a more secure way to manage access keys, such as Azure Key Vault.
+  # For this example, we will use a placeholder. Please replace with a real access key or a secure retrieval method.
+  default     = "PLEASE_REPLACE_WITH_A_REAL_ACCESS_KEY"
+}
