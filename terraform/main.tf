@@ -74,3 +74,10 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+provider "azurerm" {
+  features = {}
+  
+  # Any other necessary optional configurations
+  # Example: subscription_id, tenant_id, client_id, client_secret can be passed as required
+}
