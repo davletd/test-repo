@@ -74,3 +74,18 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+# Enabling shared key access prevention for an existing Azure Storage Account
+resource "azurerm_storage_account" "stamarildo44637494179128" {
+  name                     = "stamarildo44637494179128"
+  resource_group_name      = "rg-amarildo-3329_ai"
+  location                 = "North Europe" # Assuming the location as the default variable value
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  enable_https_traffic_only = true
+  enable_shared_key_access  = false # Disabling shared key access for compliance
+  is_hns_enabled           = false
+  tags = {
+    Environment = "production"
+  }
+}
