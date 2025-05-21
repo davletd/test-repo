@@ -63,3 +63,12 @@ variable "sql_connection_string" {
   type        = string
   default     = ""
 }
+
+variable "tags" {
+  description = "Tags to apply to resources."
+  type        = map(string)
+  default     = {
+    environment = "production"
+    compliance  = "remediated"
+  }
+}
