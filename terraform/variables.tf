@@ -29,16 +29,22 @@ variable "location" {
   default     = "North Europe"
 }
 
+
 variable "client_id" {
   description = "Azure Active Directory Application (client) ID"
   type        = string
+  default     = "your_client_id"
 }
+
+
 
 variable "client_secret" {
   description = "Azure Active Directory Application (client) Secret"
   type        = string
+  default     = "your_client_secret"
   sensitive   = true
 }
+
 
 variable "tenant_id" {
   description = "Azure Active Directory Tenant ID"
@@ -46,11 +52,14 @@ variable "tenant_id" {
   default     = "00c2299a-6609-4944-bc5a-88e811aca06e"
 }
 
+
 variable "sql_admin_password" {
   description = "Administrator password for the SQL Server"
   type        = string
+  default     = "your_password"
   sensitive   = true
 }
+
 
 variable "environment" {
   description = "The environment for the resource group (e.g., dev, staging, production)"
