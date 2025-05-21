@@ -74,3 +74,22 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
+
+provider "azurerm" {
+  features {}
+}
+
+resource "azurerm_cognitive_account" "ai_service" {
+  name                = "ai-amarildo4437ai637494179128"
+  resource_group_name = "rg-amarildo-3329_ai"
+  location            = "eastus"
+  kind                = "CognitiveServices"
+  sku_name            = "S0"
+  
+  local_authentication_disabled = true
+  
+  tags = {
+    environment = "production"
+    compliance  = "remediated"
+  }
+}
